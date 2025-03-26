@@ -7,7 +7,7 @@ if not os.path.exists("logs"):
     os.makedirs("logs")
 
 # Configure logging
-logger = logging.getLogger("chatapp")
+logger = logging.getLogger("FRAUDetetive")
 logger.setLevel(logging.DEBUG)
 
 # Log format
@@ -20,7 +20,7 @@ console_handler.setLevel(logging.DEBUG)
 
 # File Handler (stores logs in a rotating file)
 file_handler = RotatingFileHandler(
-    "logs/chatapp.log", maxBytes=5 * 1024 * 1024, backupCount=3
+    "logs/FRAUDetetive.log", maxBytes=5 * 1024 * 1024, backupCount=3
 )
 file_handler.setFormatter(formatter)
 file_handler.setLevel(logging.INFO)
