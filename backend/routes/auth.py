@@ -38,11 +38,9 @@ async def signup(user: UserCreate):
 
 @router.post("/login", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    logger.info("entered")
     user = await User.get_or_none(username=form_data.username)
     logger.info(f"user: {user}")
     if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     token = create_access_token({"sub": str(user.id)})
-    logger.info(f"token: {token}")
     return {"access_token": token, "token_type": "bearer"}
