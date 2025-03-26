@@ -1,0 +1,60 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# Logs and databases
+logs/
+*.log
+*.sqlite3
+*.sqlite
+instance/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+*.secrets
+
+# Flask cache and session data
+*.pid
+*.cache
+*.session
+
+# Python egg metadata
+*.egg-info/
+*.egg
+
+# Docker-related files
+*.dockerignore
+docker-compose.override.yml
+docker-compose.dev.yml
+pgdata/
+dbdata/
+
+# Compiled files
+dist/
+build/
+*.so
+*.out
+*.o
+
+# MacOS & Linux system files
+.DS_Store
+Thumbs.db
+
