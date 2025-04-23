@@ -1,5 +1,4 @@
 # Credit card Fraud Detection
-
 By
 Bhanu Prakash Akepogu,
 Tarun Emmanuel Majhi,
@@ -16,18 +15,19 @@ with Docker Compose for easy development and deployment.
 
 ## Table of Contents
 
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
-  - [Configuration](#configuration)
-  - [Build & Run](#build---run)
-- [Services](#services)
-- [Environment Variables](#environment-variables)
-- [Project Structure](#project-structure)
-- [Accessing the App](#accessing-the-app)
-- [Stopping & Cleaning Up](#stopping---cleaning-up)
-- [Contributing](#contributing)
-- [License](#license)
+
+- [Features](#features)  
+- [Prerequisites](#prerequisites)  
+- [Getting Started](#getting-started)  
+  - [Configuration](#configuration)  
+  - [Build & Run](#build---run)  
+- [Services](#services)  
+- [Environment Variables](#environment-variables)  
+- [Project Structure](#project-structure)  
+- [Accessing the App](#accessing-the-app)  
+- [Stopping & Cleaning Up](#stopping---cleaning-up)  
+- [Contributing](#contributing)  
+- [License](#license)  
 
 ---
 
@@ -39,6 +39,7 @@ with Docker Compose for easy development and deployment.
 - Single-command setup via Docker Compose
 - Code-volume mounts for instant updates during development
 
+
 ---
 
 ## Prerequisites
@@ -46,6 +47,7 @@ with Docker Compose for easy development and deployment.
 - [Docker](https://www.docker.com/) &
   [Docker Compose](https://docs.docker.com/compose/) installed
 - Git (for cloning the repo)
+
 
 ---
 
@@ -73,15 +75,18 @@ This will:
 - Start containers for `backend`, `frontend`, and `database`
 - Stream logs to your terminal
 
+
 ---
 
 ## Services
+
 
 | Service      | Image / Build Context              | Port Mapping | Description                                |
 | ------------ | ---------------------------------- | ------------ | ------------------------------------------ |
 | **backend**  | `./backend` (fastapi.dockerfile)   | `8000:8000`  | FastAPI app, reload enabled                |
 | **database** | `postgres:13`                      | `5432:5432`  | PostgreSQL with persistent volume `pgdata` |
 | **frontend** | `./frontend` (frontend.dockerfile) | `5173:5173`  | React (Vite) dev server                    |
+
 
 ---
 
@@ -109,10 +114,12 @@ Load required .env files
 
 ---
 
+
+
 ## Accessing the App
 
-- **Frontend**: http://localhost:5173
-- **Backend API Docs**: http://localhost:8000/docs
+- **Frontend**: http://localhost:5173  
+- **Backend API Docs**: http://localhost:8000/docs  
 - **Postgres**: `postgres://postgres:postgres@localhost:5432/postgres`
 
 ---
@@ -135,11 +142,11 @@ docker compose -f compose.yml down -v
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feat/your-feature`)
-3. Commit your changes (`git commit -m "Add your feature"`)
-4. Push to your branch (`git push origin feat/your-feature`)
-5. Open a Pull Request
+1. Fork the repository  
+2. Create a feature branch (`git checkout -b feat/your-feature`)  
+3. Commit your changes (`git commit -m "Add your feature"`)  
+4. Push to your branch (`git push origin feat/your-feature`)  
+5. Open a Pull Request  
 
 ---
 
