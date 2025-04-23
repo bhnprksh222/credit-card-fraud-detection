@@ -6,9 +6,6 @@ Description : This script initializes Postgresql Database and closes.
 Version     : 1.0.0
 """
 
-
-# from config import current_config
-
 from fastapi import HTTPException
 from logger import logger
 from tortoise import Tortoise

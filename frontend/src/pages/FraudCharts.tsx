@@ -32,8 +32,6 @@ interface FraudChartsProps {
   data: Transaction[];
 }
 
-const COLORS = ["#EF4444", "#3B82F6", "#10B981", "#F59E0B", "#6366F1"];
-
 const FraudCharts: React.FC<FraudChartsProps> = ({ data }) => {
   const categoryCount = data.reduce((acc: any, curr) => {
     acc[curr.category] = (acc[curr.category] || 0) + 1;
