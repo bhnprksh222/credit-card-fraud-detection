@@ -95,61 +95,38 @@ const Dashboard: React.FC = () => {
     window.location.href = "/";
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (!selectedFile) return;
-    setFile(selectedFile);
-    setUploadError(null);
-  };
-
   const handleSubmitUpload = async () => {
-    if (!file) {
-      setUploadError("Please select a CSV file before uploading.");
-      return;
-    }
+      if (!file) {
+        setUploadError("Please select a CSV file before uploading.");
+        return;
+      }
 
-    const formData = new FormData();
-    formData.append("file", file);
-    setIsUploading(true);
-    setUploadInProgress(true);
-    setUploadProgress(0); // Reset progress
+      const formData = new FormData();
+      formData.append("file", file);
+      setIsUploading(true);
 
-    try {
-      await axios.post("http://localhost:8000/upload-csv", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
-        onUploadProgress: (progressEvent) => {
-          const percent = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
-          setUploadProgress(percent);
-        },
-      });
+      try {
+        const uploadedRes = await axios.post("http://localhost:8000/upload-csv", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
+        });
 
-      setSuccessOpen(true);
-      setFile(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    } catch (err: any) {
-      setUploadError(err.response?.data?.detail || "Upload failed.");
-    } finally {
-      setIsUploading(false);
-      setUploadInProgress(false);
-    }
-  };
+        const res = await axios.get("http://localhost:8000/predict-fraud", {
+          withCredentials: true,
+        });
 
-  const handlePrediction = async () => {
-    setIsPredicting(true); // Start spinner
-    try {
-      const res = await axios.get("http://localhost:8000/predict-fraud", {
-        withCredentials: true,
-      });
-      setPredictedFraud(res.data.fraudulent);
-      setAllPredicted(res.data.all);
-      setShowPredictions(true);
-    } catch (err: any) {
-      alert("Prediction failed: " + (err.response?.data?.detail || err.message));
-    } finally {
-      setIsPredicting(false); // Stop spinner
-    }
-  };
+        setPredictedFraud(res.data.fraudulent);
+        setAllPredicted(res.data.all);
+        setShowPredictions(true);
+        setSuccessOpen(true);
+        setFile(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+      } catch (err: any) {
+        setUploadError(err.response?.data?.detail || "Upload or Prediction failed.");
+      } finally {
+        setIsUploading(false);
+      }
+  } 
 
   if (!user) {
     return (
@@ -181,8 +158,8 @@ const Dashboard: React.FC = () => {
             {uploadError}
           </Alert>
         )}
-
       </Paper>
+
       <Box display="flex" flexDirection="column" alignItems="center" gap={2} mt={2}>
         <Button
           variant="outlined"
@@ -214,38 +191,7 @@ const Dashboard: React.FC = () => {
         <Button
           variant="contained"
           color="success"
-          onClick={async () => {
-            if (!file) {
-              setUploadError("Please select a CSV file before uploading.");
-              return;
-            }
-
-            const formData = new FormData();
-            formData.append("file", file);
-            setIsUploading(true);
-
-            try {
-              await axios.post("http://localhost:8000/upload-csv", formData, {
-                headers: { "Content-Type": "multipart/form-data" },
-                withCredentials: true,
-              });
-
-              const res = await axios.get("http://localhost:8000/predict-fraud", {
-                withCredentials: true,
-              });
-
-              setPredictedFraud(res.data.fraudulent);
-              setAllPredicted(res.data.all);
-              setShowPredictions(true);
-              setSuccessOpen(true);
-              setFile(null);
-              if (fileInputRef.current) fileInputRef.current.value = "";
-            } catch (err: any) {
-              setUploadError(err.response?.data?.detail || "Upload or Prediction failed.");
-            } finally {
-              setIsUploading(false);
-            }
-          }}
+          onClick={handleSubmitUpload}
           disabled={isUploading}
           sx={{ textTransform: "none", fontWeight: 600, width: "100%" }}
         >
@@ -280,23 +226,16 @@ const Dashboard: React.FC = () => {
           <Box height={400}>
             <DataGrid
               rows={(showOnlyPredFraud ? predictedFraud : allPredicted).map((row, index) => ({ id: index + 1, ...row }))}
-              columns={[
-                { field: "merchant", headerName: "Merchant", width: 150 },
-                { field: "amt", headerName: "Amount", width: 100 },
-                { field: "category", headerName: "Category", width: 120 },
-                { field: "city", headerName: "City", width: 120 },
-                { field: "is_fraud", headerName: "True Fraud", width: 100 },
-                { field: "predicted_fraud", headerName: "Predicted", width: 100 },
-              ]}
+              columns={columns}
               initialState={{
                 pagination: {
                   paginationModel: { pageSize: 5, page: 0 },
                 },
               }}
-              pageSizeOptions={[5]}
+              pageSizeOptions={[20]}
             />
           </Box>
-           <FraudCharts data={predictedFraud} />
+          <FraudCharts data={predictedFraud} />
         </>
       )}
 
