@@ -14,6 +14,10 @@ import {
   Pie,
   Cell,
   ResponsiveContainer,
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
 } from "recharts";
 
 interface Transaction {
@@ -32,15 +36,17 @@ interface FraudChartsProps {
   data: Transaction[];
 }
 
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A28FD0", "#FF6384"];
+
 const FraudCharts: React.FC<FraudChartsProps> = ({ data }) => {
-  const categoryCount = data.reduce((acc: any, curr) => {
+  // Aggregate data
+  const categoryCount = data.reduce((acc: Record<string, number>, curr) => {
     acc[curr.category] = (acc[curr.category] || 0) + 1;
     return acc;
   }, {});
-
   const categoryData = Object.entries(categoryCount).map(([key, value]) => ({
     category: key,
-    count: value as number,
+    count: value,
   }));
 
   const hourlyData = Array.from({ length: 24 }, (_, i) => ({
@@ -60,29 +66,48 @@ const FraudCharts: React.FC<FraudChartsProps> = ({ data }) => {
 
   return (
     <Box mt={6}>
-      <Typography variant="h5" fontWeight={700} mb={2}>Fraud Distribution by Category</Typography>
+      {/* Pie Chart for Category Distribution */}
+      <Typography variant="h5" fontWeight={700} mb={2}>
+        Fraud Distribution by Category
+      </Typography>
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={categoryData}>
-          <XAxis dataKey="category" />
-          <YAxis />
+        <PieChart>
+          <Pie
+            data={categoryData}
+            dataKey="count"
+            nameKey="category"
+            cx="50%"
+            cy="50%"
+            outerRadius={100}
+            
+          >
+            {categoryData.map((_, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
           <Tooltip />
-          <Legend />
-          <Bar dataKey="count" fill="#EF4444" />
-        </BarChart>
+          <Legend layout="horizontal" verticalAlign="bottom" />
+        </PieChart>
       </ResponsiveContainer>
 
-      <Typography variant="h5" fontWeight={700} mt={6} mb={2}>Fraudulent Transactions by Hour</Typography>
+      {/* Line Chart for Hourly Fraud Trend */}
+      <Typography variant="h5" fontWeight={700} mt={6} mb={2}>
+        Fraudulent Transactions by Hour
+      </Typography>
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={hourlyData}>
+        <LineChart data={hourlyData}>
           <XAxis dataKey="hour" />
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="count" fill="#3B82F6" />
-        </BarChart>
+          <Line type="monotone" dataKey="count" stroke="#3B82F6" dot={false} />
+        </LineChart>
       </ResponsiveContainer>
 
-      <Typography variant="h5" fontWeight={700} mt={6} mb={2}>Fraud by Day of Week</Typography>
+      {/* Bar Chart for Day of Week */}
+      <Typography variant="h5" fontWeight={700} mt={6} mb={2}>
+        Fraud by Day of Week
+      </Typography>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={dailyData}>
           <XAxis dataKey="day" />
@@ -93,15 +118,18 @@ const FraudCharts: React.FC<FraudChartsProps> = ({ data }) => {
         </BarChart>
       </ResponsiveContainer>
 
-      <Typography variant="h5" fontWeight={700} mt={6} mb={2}>Fraud by Month</Typography>
+      {/* Area Chart for Monthly Trend */}
+      <Typography variant="h5" fontWeight={700} mt={6} mb={2}>
+        Fraud by Month
+      </Typography>
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={monthlyData}>
+        <AreaChart data={monthlyData}>
           <XAxis dataKey="month" />
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="count" fill="#F59E0B" />
-        </BarChart>
+          <Area type="monotone" dataKey="count" stroke="#F59E0B" fill="#FEEBC8" />
+        </AreaChart>
       </ResponsiveContainer>
     </Box>
   );
