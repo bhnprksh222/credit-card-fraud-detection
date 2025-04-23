@@ -1,0 +1,28 @@
+# Byte-compiled / cached files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+
+# Environment variables
+.env
+
+# Database files
+*.sqlite3
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+logs/
+
+# Python packages
+*.egg-info/
+.DS_Store

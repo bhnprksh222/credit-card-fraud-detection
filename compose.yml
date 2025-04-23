@@ -1,0 +1,58 @@
+services:
+  # FASTAPI SERVICE
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: fastapi.dockerfile
+    ports:
+      - 8000:8000
+    environment:
+      - FASTAPI_ENV=development
+      - DATABASE_URL=postgres://postgres:postgres@database:5432/postgres
+      - PYTHONUNBUFFERED=1
+      - FASTAPI_DEBUG=1
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+
+  # DB SERVICE
+  database:
+    container_name: database
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
+  # REACT FRONTEND SERVICE
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: frontend.dockerfile
+    ports:
+      - 5173:5173
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    command: ["npm", "run", "dev"]
+
+volumes:
+  pgdata: {}
