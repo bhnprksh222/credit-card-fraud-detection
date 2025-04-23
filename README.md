@@ -8,12 +8,13 @@ Vandana Chinthala
 # FastAPI + React + PostgreSQL Dockerized Stack
 
 A full-stack boilerplate that brings together a **FastAPI** backend,
-a **React** frontend, and a **PostgreSQL** database—fully containerized 
+a **React** frontend, and a **PostgreSQL** database—fully containerized
 with Docker Compose for easy development and deployment.
 
 ---
 
 ## Table of Contents
+
 
 - [Features](#features)  
 - [Prerequisites](#prerequisites)  
@@ -32,19 +33,21 @@ with Docker Compose for easy development and deployment.
 
 ## Features
 
-- **FastAPI** server with hot reload and built-in OpenAPI docs  
-- **React** (Vite) frontend served at port 5173 with live-reload  
-- **PostgreSQL** 13 as the primary datastore  
-- Single-command setup via Docker Compose  
-- Code-volume mounts for instant updates during development  
+- **FastAPI** server with hot reload and built-in OpenAPI docs
+- **React** (Vite) frontend served at port 5173 with live-reload
+- **PostgreSQL** 13 as the primary datastore
+- Single-command setup via Docker Compose
+- Code-volume mounts for instant updates during development
+
 
 ---
 
 ## Prerequisites
 
-- [Docker](https://www.docker.com/) & 
-[Docker Compose](https://docs.docker.com/compose/) installed  
-- Git (for cloning the repo)  
+- [Docker](https://www.docker.com/) &
+  [Docker Compose](https://docs.docker.com/compose/) installed
+- Git (for cloning the repo)
+
 
 ---
 
@@ -52,34 +55,38 @@ with Docker Compose for easy development and deployment.
 
 ### Configuration
 
-1. **Clone this repository**  
+1. **Clone this repository**
    ```bash
-   git clone https://github.com/your-username/your-repo.git
-   cd your-repo
+   git clone git@github.com:bhnprksh222/credit-card-fraud-detection.git
+   cd credit-card-fraud-detection
    ```
-
 
 ### Build & Run
 
 From the project root, run:
+
 ```bash
-docker-compose -f compose.yml up --build
+docker compose -f compose.yml up --build
 ```
+
 This will:
 
-- Build both **backend** and **frontend** images  
-- Start containers for `backend`, `frontend`, and `database`  
-- Stream logs to your terminal  
+- Build both **backend** and **frontend** images
+- Start containers for `backend`, `frontend`, and `database`
+- Stream logs to your terminal
+
 
 ---
 
 ## Services
 
-| Service    | Image / Build Context                 | Port Mapping      | Description                                 |
-|------------|---------------------------------------|-------------------|---------------------------------------------|
-| **backend**  | `./backend` (fastapi.dockerfile)       | `8000:8000`        | FastAPI app, reload enabled                 |
-| **database** | `postgres:13`                         | `5432:5432`        | PostgreSQL with persistent volume `pgdata`  |
-| **frontend** | `./frontend` (frontend.dockerfile)     | `5173:5173`        | React (Vite) dev server                     |
+
+| Service      | Image / Build Context              | Port Mapping | Description                                |
+| ------------ | ---------------------------------- | ------------ | ------------------------------------------ |
+| **backend**  | `./backend` (fastapi.dockerfile)   | `8000:8000`  | FastAPI app, reload enabled                |
+| **database** | `postgres:13`                      | `5432:5432`  | PostgreSQL with persistent volume `pgdata` |
+| **frontend** | `./frontend` (frontend.dockerfile) | `5173:5173`  | React (Vite) dev server                    |
+
 
 ---
 
@@ -108,6 +115,7 @@ Load required .env files
 ---
 
 
+
 ## Accessing the App
 
 - **Frontend**: http://localhost:5173  
@@ -119,13 +127,15 @@ Load required .env files
 ## Stopping & Cleaning Up
 
 To stop:
+
 ```bash
-docker-compose -f compose.yml down
+docker compose -f compose.yml down
 ```
 
 To remove volumes (e.g., reset the database):
+
 ```bash
-docker-compose -f compose.yml down -v
+docker compose -f compose.yml down -v
 ```
 
 ---
