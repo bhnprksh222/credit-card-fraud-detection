@@ -3,6 +3,7 @@ from typing import Optional
 
 import pandas as pd
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile, status
+from logger import logger
 from models.transaction import Transaction
 from tortoise.transactions import in_transaction
 
@@ -19,6 +20,7 @@ async def upload_csv(file: UploadFile = File(...)):
     contents = await file.read()
     try:
         df = pd.read_csv(StringIO(contents.decode("utf-8")))
+        df.columns = df.columns.str.strip().str.lower()
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -57,6 +59,13 @@ async def upload_csv(file: UploadFile = File(...)):
             detail=f"Missing columns in CSV: {', '.join(missing)}",
         )
 
+    # Remove duplicates based on unique transaction number
+    existing_trans_nums = await Transaction.filter(
+        trans_num__in=df["trans_num"].tolist()
+    ).values_list("trans_num", flat=True)
+
+    df = df[~df["trans_num"].isin(existing_trans_nums)]
+
     # Convert and prepare Transaction objects
     try:
         transactions = [
@@ -89,14 +98,22 @@ async def upload_csv(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Data conversion error: {str(e)}")
 
-    # Insert in bulk inside transaction
     try:
         async with in_transaction():
+            # Clear transactions in the transactions table
+            await Transaction.all().delete()
+
+            # Insert in bulk inside transaction
             await Transaction.bulk_create(transactions)
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Failed to insert records: {str(e)}"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to insert records: {str(e)}",
         )
+
+    logger.info(
+        f"Cleared old records and Inserted {len(transactions)} new transactions."
+    )
 
     return {
         "message": f"CSV uploaded successfully. Inserted {len(transactions)} records."

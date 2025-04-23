@@ -137,7 +137,7 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 6, mb: 8 }}>
+    <Container maxWidth="xl" sx={{ mt: 6, mb: 8 }}>
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <Button variant="contained" color="error" onClick={handleLogout} size="small">
           Logout
@@ -165,7 +165,7 @@ const Dashboard: React.FC = () => {
           variant="outlined"
           component="label"
           startIcon={<UploadFileIcon />}
-          sx={{ textTransform: "none", width: "100%" }}
+          sx={{ textTransform: "none" }}
         >
           Choose CSV File
           <input
@@ -193,9 +193,9 @@ const Dashboard: React.FC = () => {
           color="success"
           onClick={handleSubmitUpload}
           disabled={isUploading}
-          sx={{ textTransform: "none", fontWeight: 600, width: "100%" }}
+          sx={{ textTransform: "none", fontWeight: 600, cursor: "pointer" }}
         >
-          {isUploading ? <CircularProgress size={24} color="inherit" /> : "Upload & Predict"}
+          {isUploading ? <CircularProgress size={24} color="inherit" /> : "Upload & Detect 🔎"}
         </Button>
         {
           uploadInProgress && (
