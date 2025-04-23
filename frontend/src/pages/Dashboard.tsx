@@ -229,7 +229,7 @@ const Dashboard: React.FC = () => {
               columns={columns}
               initialState={{
                 pagination: {
-                  paginationModel: { pageSize: 5, page: 0 },
+                  paginationModel: { pageSize: 10, page: 0 },
                 },
               }}
               pageSizeOptions={[20]}

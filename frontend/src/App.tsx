@@ -19,7 +19,7 @@ function App() {
           paddingTop: 6,
         }}
       >
-        <Container maxWidth="sm" sx={{ width: "100%", px: 2 }}>
+        <Container maxWidth="lg" sx={{ width: "100%", px: 2 }}>
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
