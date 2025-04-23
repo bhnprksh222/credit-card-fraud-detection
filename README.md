@@ -1,8 +1,8 @@
 # Credit card Fraud Detection
 By
-Bhanu Prakash Akepogu
-Tarun Emmanuel Majhi
-Charan Reddy Devapatla
+Bhanu Prakash Akepogu,
+Tarun Emmanuel Majhi,
+Charan Reddy Devapatla and
 Vandana Chinthala
 
 # FastAPI + React + PostgreSQL Dockerized Stack
