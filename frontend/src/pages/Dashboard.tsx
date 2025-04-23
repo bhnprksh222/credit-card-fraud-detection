@@ -13,6 +13,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Tabs,
+  Tab
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
@@ -21,16 +23,15 @@ import axios from "axios";
 import logo from "../assets/logo.png";
 import FraudCharts from "./FraudCharts";
 
-
 const Dashboard: React.FC = () => {
   const [user, setUser] = useState<{ firstname: string } | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [isPredicting, setIsPredicting] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploadInProgress, setUploadInProgress] = useState(false);
+  const [tab, setTab] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [rows, setRows] = useState<any[]>([]);
@@ -56,20 +57,15 @@ const Dashboard: React.FC = () => {
   ];
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8000/auth/me", { withCredentials: true })
+    axios.get("http://localhost:8000/auth/me", { withCredentials: true })
       .then((res) => setUser(res.data))
-      .catch(() => {
-        window.location.href = "/login";
-      });
+      .catch(() => window.location.href = "/login");
   }, []);
 
   const fetchTransactions = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(
-        `http://localhost:8000/transactions?limit=${pageSize}&offset=${page * pageSize}${showFraudOnly ? "&is_fraud=true" : ""}`
-      );
+      const res = await axios.get(`http://localhost:8000/transactions?limit=${pageSize}&offset=${page * pageSize}${showFraudOnly ? "&is_fraud=true" : ""}`);
       setRows(res.data.transactions);
       setTotalRows(res.data.total);
     } catch (err) {
@@ -89,44 +85,41 @@ const Dashboard: React.FC = () => {
     }
   }, [uploadProgress]);
 
-
   const handleLogout = async () => {
     await axios.post("http://localhost:8000/auth/logout", {}, { withCredentials: true });
     window.location.href = "/";
   };
 
   const handleSubmitUpload = async () => {
-      if (!file) {
-        setUploadError("Please select a CSV file before uploading.");
-        return;
-      }
+    if (!file) {
+      setUploadError("Please select a CSV file before uploading.");
+      return;
+    }
 
-      const formData = new FormData();
-      formData.append("file", file);
-      setIsUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    setIsUploading(true);
 
-      try {
-        const uploadedRes = await axios.post("http://localhost:8000/upload-csv", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true,
-        });
+    try {
+      await axios.post("http://localhost:8000/upload-csv", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
 
-        const res = await axios.get("http://localhost:8000/predict-fraud", {
-          withCredentials: true,
-        });
+      const res = await axios.get("http://localhost:8000/predict-fraud", { withCredentials: true });
 
-        setPredictedFraud(res.data.fraudulent);
-        setAllPredicted(res.data.all);
-        setShowPredictions(true);
-        setSuccessOpen(true);
-        setFile(null);
-        if (fileInputRef.current) fileInputRef.current.value = "";
-      } catch (err: any) {
-        setUploadError(err.response?.data?.detail || "Upload or Prediction failed.");
-      } finally {
-        setIsUploading(false);
-      }
-  } 
+      setPredictedFraud(res.data.fraudulent);
+      setAllPredicted(res.data.all);
+      setShowPredictions(true);
+      setSuccessOpen(true);
+      setFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    } catch (err: any) {
+      setUploadError(err.response?.data?.detail || "Upload or Prediction failed.");
+    } finally {
+      setIsUploading(false);
+    }
+  }
 
   if (!user) {
     return (
@@ -158,63 +151,67 @@ const Dashboard: React.FC = () => {
             {uploadError}
           </Alert>
         )}
+
+        <Box display="flex" flexDirection="column" alignItems="center" gap={2} mt={2}>
+          <Button
+            variant="outlined"
+            component="label"
+            startIcon={<UploadFileIcon />}
+            sx={{ textTransform: "none" }}
+          >
+            Choose CSV File
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".csv"
+              hidden
+              onChange={(e) => {
+                const selectedFile = e.target.files?.[0];
+                if (!selectedFile) return;
+                setFile(selectedFile);
+                setUploadError(null);
+              }}
+            />
+          </Button>
+
+          {file && (
+            <Typography variant="body2" color="text.secondary">
+              Selected: {file.name}
+            </Typography>
+          )}
+
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleSubmitUpload}
+            disabled={isUploading}
+            sx={{ textTransform: "none", fontWeight: 600, cursor: "pointer" }}
+          >
+            {isUploading ? <CircularProgress size={24} color="inherit" /> : "Upload & Detect 🔎"}
+          </Button>
+          {
+            uploadInProgress && (
+              <Box width="100%" sx={{ mt: 2 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Uploading: {uploadProgress}%
+                </Typography>
+                <LinearProgress variant="determinate" value={uploadProgress} />
+              </Box>
+            )
+          }
+        </Box>
       </Paper>
 
-      <Box display="flex" flexDirection="column" alignItems="center" gap={2} mt={2}>
-        <Button
-          variant="outlined"
-          component="label"
-          startIcon={<UploadFileIcon />}
-          sx={{ textTransform: "none" }}
-        >
-          Choose CSV File
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".csv"
-            hidden
-            onChange={(e) => {
-              const selectedFile = e.target.files?.[0];
-              if (!selectedFile) return;
-              setFile(selectedFile);
-              setUploadError(null);
-            }}
-          />
-        </Button>
+      <Tabs value={tab} onChange={(e, newValue) => setTab(newValue)} centered sx={{ mt: 6 }}>
+        <Tab label="Transactions" />
+        <Tab label="Charts" />
+      </Tabs>
 
-        {file && (
-          <Typography variant="body2" color="text.secondary">
-            Selected: {file.name}
-          </Typography>
-        )}
-
-        <Button
-          variant="contained"
-          color="success"
-          onClick={handleSubmitUpload}
-          disabled={isUploading}
-          sx={{ textTransform: "none", fontWeight: 600, cursor: "pointer" }}
-        >
-          {isUploading ? <CircularProgress size={24} color="inherit" /> : "Upload & Detect 🔎"}
-        </Button>
-        {
-          uploadInProgress && (
-            <Box width="100%" sx={{ mt: 2 }}>
-              <Typography variant="body2" color="text.secondary">
-                Uploading: {uploadProgress}%
-              </Typography>
-              <LinearProgress variant="determinate" value={uploadProgress} />
-            </Box>
-          )
-        }
-      </Box>
-
-      {showPredictions && (
+      {showPredictions && tab === 0 && (
         <>
           <Typography variant="h6" mt={6} mb={2} fontWeight={600}>
             Detected Fraudulent Transactions
           </Typography>
-
           <Button
             variant="outlined"
             onClick={() => setShowOnlyPredFraud(!showOnlyPredFraud)}
@@ -222,7 +219,6 @@ const Dashboard: React.FC = () => {
           >
             {showOnlyPredFraud ? "Show All Predictions" : "Show Only Predicted Frauds"}
           </Button>
-
           <Box height={400}>
             <DataGrid
               rows={(showOnlyPredFraud ? predictedFraud : allPredicted).map((row, index) => ({ id: index + 1, ...row }))}
@@ -232,12 +228,13 @@ const Dashboard: React.FC = () => {
                   paginationModel: { pageSize: 10, page: 0 },
                 },
               }}
-              pageSizeOptions={[20]}
+              pageSizeOptions={[10, 20]}
             />
           </Box>
-          <FraudCharts data={predictedFraud} />
         </>
       )}
+
+      {showPredictions && tab === 1 && <FraudCharts data={predictedFraud} />}
 
       <Dialog open={!!selectedTx} onClose={() => setSelectedTx(null)} fullWidth maxWidth="sm">
         <DialogTitle>Transaction #{selectedTx?.id}</DialogTitle>
@@ -262,9 +259,9 @@ const Dashboard: React.FC = () => {
         onClose={() => setSuccessOpen(false)}
         message="CSV uploaded successfully"
       />
-
     </Container>
   );
 };
 
 export default Dashboard;
+
