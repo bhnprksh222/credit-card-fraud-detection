@@ -6,12 +6,12 @@ Description : This script initializes Postgresql Database and closes.
 Version     : 1.0.0
 """
 
+from config import current_config
 from fastapi import HTTPException
 from logger import logger
 from tortoise import Tortoise
 
-# DATABASE_URL = current_config.DATABASE_URL
-DATABASE_URL = "postgres://postgres:postgres@database:5432/postgres"
+DATABASE_URL = current_config.DATABASE_URL
 
 
 async def init_db():

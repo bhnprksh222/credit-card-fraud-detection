@@ -17,7 +17,7 @@ EXPOSE 8000
 
 # Set environment variables
 ENV FASTAPI_ENV=development
-ENV DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+ENV DATABASE_URL=postgresql://admin:vOJldSkSUTC5nTJmJ3iQFFwccoLVPJ5D@dpg-d04nikp5pdvs73a8tabg-a/fraud_db_mbw8
 ENV FASTAPI_DEBUG=1
 
 # Run FastAPI application
