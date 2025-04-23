@@ -25,4 +25,4 @@ logs/
 
 # Python packages
 *.egg-info/
-
+.DS_Store

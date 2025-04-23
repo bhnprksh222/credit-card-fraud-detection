@@ -21,7 +21,7 @@ async def init_db():
     try:
         await Tortoise.init(
             db_url=DATABASE_URL,
-            modules={"models": ["models.user"]},
+            modules={"models": ["models.user", "models.transaction"]},
         )
         await Tortoise.generate_schemas()
         logger.info("Database initialized successfully")
