@@ -16,7 +16,8 @@ from tortoise import Tortoise
 async def init_db():
     try:
         await Tortoise.init(
-            db_url="postgresql://admin:vOJldSkSUTC5nTJmJ3iQFFwccoLVPJ5D@dpg-d04nikp5pdvs73a8tabg-a/fraud_db_mbw8",
+            # db_url="postgresql://admin:vOJldSkSUTC5nTJmJ3iQFFwccoLVPJ5D@dpg-d04nikp5pdvs73a8tabg-a/fraud_db_mbw8",
+            db_url="postgresql://admin:vOJldSkSUTC5nTJmJ3iQFFwccoLVPJ5D@dpg-d04nikp5pdvs73a8tabg-a.oregon-postgres.render.com/fraud_db_mbw8",
             modules={"models": ["models.user", "models.transaction"]},
         )
         await Tortoise.generate_schemas()
