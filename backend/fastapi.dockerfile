@@ -21,4 +21,4 @@ ENV DATABASE_URL=postgresql://admin:vOJldSkSUTC5nTJmJ3iQFFwccoLVPJ5D@dpg-d04nikp
 ENV FASTAPI_DEBUG=1
 
 # Run FastAPI application
-CMD uvicorn main:app --host 0.0.0.0 --port $PORT
+CMD uvicorn app:app --host 0.0.0.0 --port $PORT
