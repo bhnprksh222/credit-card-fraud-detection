@@ -11,9 +11,6 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-# Database credentials
-DB_URL = "postgresql://postgres:postgres@localhost:5432/postgres"
-
 
 # -----------------------------------------------
 # 1. Fetch data from PostgreSQL (async)
